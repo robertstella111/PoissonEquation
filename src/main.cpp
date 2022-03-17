@@ -148,7 +148,8 @@ int main() {
   */
 
   Diff_gen test("../Input//nin_in.deva");
-  // test.test1();
-  cout << "Test" << endl;
+  //test.solve3();  //Errechnen der Ladunsverteilung und danach Potential berechnen
+  test.test1();
+  //cout << "Test" << endl;
   return 0;
 }
