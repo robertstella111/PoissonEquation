@@ -1,4 +1,4 @@
-#include "Diffusion_file.h"
+#include "../include/Diffusion_file.h"
 
 #define T 8000
 
@@ -773,7 +773,7 @@ Eigen::VectorXd Diff_gen::Poisson(Eigen::VectorXd Ladunsverteilung) {
 
 double testfkt(double x, double y, double z) {
   double k = (2 * M_PI) / (6e-7);
-  return 19 * pow(k, 2) * cos(k * x) * cos(3 * k * y) * cos(3 * k * z);
+  return -19 * k*k * cos(k * x) * cos(3 * k * y) * cos(3 * k * z);
 }
 
 double Randtest(double x, double y, double z) {
@@ -891,8 +891,8 @@ void Diff_gen::test1() {
         }
       }
       volume = 0;
+      zwischen = 0;
       for (unsigned long i = 0; i < neighbors.size(); i++) {
-
         surface = voronoi.getSurface(pointlist[x], neighbors[i]);
         abstand = (p.getPoint("simulationGrid", pointlist[x]) -
                    p.getPoint("simulationGrid", neighbors[i]))
@@ -900,9 +900,14 @@ void Diff_gen::test1() {
         x_koord = p.getPoint("simulationGrid", pointlist[x]).x[0];
         y_koord = p.getPoint("simulationGrid", pointlist[x]).x[1];
         z_koord = p.getPoint("simulationGrid", pointlist[x]).x[2];
-        zwischen = 1;
-        vec[x] = Randtest(x_koord, y_koord, z_koord);
+        zwischen  += surface/abstand;
+        mat.insert(x, index_vec(pointlist, neighbors[i])) = -surface / abstand;
+        
       }
+      zwischen += 1;
+    
+      volume = voronoi.getvolume(pointlist[x]);
+      vec[x] = volume * testfkt(x_koord, y_koord, z_koord) + Randtest(x_koord, y_koord, z_koord);
       tetraeder.clear();
       neighbors.clear();
     } else if (p.getPoint("simulationGrid", pointlist[x]).x[0] <= 1e-14 ||
@@ -962,9 +967,14 @@ void Diff_gen::test1() {
         x_koord = p.getPoint("simulationGrid", pointlist[x]).x[0];
         y_koord = p.getPoint("simulationGrid", pointlist[x]).x[1];
         z_koord = p.getPoint("simulationGrid", pointlist[x]).x[2];
-        zwischen = 1;
-        vec[x] = Randtest(x_koord, y_koord, z_koord);
+        zwischen  += surface/abstand;
+        mat.insert(x, index_vec(pointlist, neighbors[i])) = -surface / abstand;
+        
       }
+      zwischen += 1;
+    
+      volume = voronoi.getvolume(pointlist[x]);
+      vec[x] = volume * testfkt(x_koord, y_koord, z_koord) + Randtest(x_koord, y_koord, z_koord);
       tetraeder.clear();
       neighbors.clear();
     } else {
@@ -1009,13 +1019,15 @@ void Diff_gen::test1() {
         }
       }
       volume = 0;
+      zwischen = 0;
       for (unsigned long i = 0; i < neighbors.size(); i++) {
         surface = voronoi.getSurface(pointlist[x], neighbors[i]);
         abstand = (p.getPoint("simulationGrid", pointlist[x]) -
                    p.getPoint("simulationGrid", neighbors[i]))
                       .norm();
-        zwischen -= surface / abstand;
-        mat.insert(x, index_vec(pointlist, neighbors[i])) = surface / abstand;
+        //cout << "main " << neighbors[i] << " " << surface <<endl;
+        zwischen += surface / abstand;
+        mat.insert(x, index_vec(pointlist, neighbors[i])) = -surface / abstand;
       }
       volume = voronoi.getvolume(pointlist[x]);
       x_koord = p.getPoint("simulationGrid", pointlist[x]).x[0];
@@ -1023,7 +1035,7 @@ void Diff_gen::test1() {
       z_koord = p.getPoint("simulationGrid", pointlist[x]).x[2];
 
       vec[x] = testfkt(x_koord, y_koord, z_koord) * volume;
-      cout << x << "  " << vec[x] << endl;
+     // cout << x << "  " << vec[x] << endl;
       tetraeder.clear();
       neighbors.clear();
     }
@@ -1033,6 +1045,9 @@ void Diff_gen::test1() {
   Eigen::BiCGSTAB<Eigen::SparseMatrix<double>> lscg;
   lscg.compute(mat);
   ergebnis = lscg.solve(vec);
-  for (unsigned long k = 0; k < pointlist.size(); k++)
+  for (unsigned long k = 0; k < pointlist.size(); k++) {
+   // if((ergebnis[k]) < -1.5 || ergebnis[k] > 1.5) cout << "Fehler << " << ergebnis[k] << endl;
     cout << ergebnis[k] << endl;
+  }
+   
 }

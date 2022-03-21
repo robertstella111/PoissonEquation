@@ -1,4 +1,4 @@
-#include "surface.h"
+#include "../include/surface.h"
 
 void Surface::init(int length) { numbers = length; }
 void Surface::import_vertex(vec *dat) { vertex = dat; }

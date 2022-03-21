@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-#include "vec.h"
+#include "../include/vec.h"
 
 void vec :: import(double *a)
 {

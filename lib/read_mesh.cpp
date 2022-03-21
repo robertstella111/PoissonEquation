@@ -1,6 +1,6 @@
-#include "read_mesh.h"
-#include "functions.h"
-#include "surface.h"
+#include "../include/read_mesh.h"
+#include "../include/functions.h"
+#include "../include/surface.h"
 
 PointList2::PointList2() { number = 0; }
 

@@ -1,4 +1,4 @@
-#include "ONED_Poisson.h"
+#include "../include/OneD_Poisson.h"
 #include "../eigen-3.4.0/Eigen/Core"
 #include "../eigen-3.4.0/Eigen/IterativeLinearSolvers"
 #include <fstream>

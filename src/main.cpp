@@ -3,12 +3,12 @@
 #include <math.h>
 #include <vector>
 
-#include "Diffusion1D.h"
-#include "Diffusion_file.h"
-#include "OneD_Poisson.h"
-#include "Runge_Kutta.h"
-#include "ThreeD_Poisson.h"
-#include "TwoD_Poisson.h"
+//#include "Diffusion1D.h"
+#include "../include/Diffusion_file.h"
+//#include "OneD_Poisson.h"
+//#include "Runge_Kutta.h"
+//#include "ThreeD_Poisson.h"
+//#include "TwoD_Poisson.h"
 
 #define N 80
 #define T 100
